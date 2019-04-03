@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   task: {
-    flexDirection: 'row',
+    flexDirection: 'row'
   }
 })
 
@@ -40,21 +40,11 @@ export default class App extends React.Component {
     }
   }
 
-  toggleCheck (todo) {
-    todo.checked = !todo.checked
-    console.log(todo.checked)
-  }
-
   render () {
-    console.log("hi")
     const list = this.state.todos.map(item => (
       <View style={styles.task} key={item.id}>
         <View>
-          <CheckBox
-            onClick={this.toggleCheck(item)}
-            value={item.checked}
-            checked={item.checked}
-          />
+          <CheckBox value={item.checked} checked={item.checked} />
         </View>
         <View>
           <Text>{item.value}</Text>
@@ -78,8 +68,7 @@ export default class App extends React.Component {
           onPress={() => {
             this.state.todos.push(new Todo(this.state.text))
             this.setState({
-              text : '',
-              todos : this.state.todos
+              text: ''
             })
           }}
         />
