@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import idGenerator from 'react-id-generator'
 import {
   View,
@@ -9,42 +9,38 @@ import {
   CheckBox
 } from 'react-native'
 
-const styles = StyleSheet.create({
-  all: {
-    flex: 1,
-    justifyContent: 'center'
-  },
-  task: {
-    flexDirection: 'row'
-  }
-})
-
 class Todo {
   value
   id
-  checked
+  completed
 
   constructor (value) {
     this.value = value
     this.id = idGenerator()
-    this.checked = false
+    this.completed = false
   }
 }
 
 export default class App extends React.Component {
+  render () {
+    return <TodosComponent />
+  }
+}
+
+export class TodosComponent extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
       text: '',
-      todos: []
+      items: []
     }
   }
 
   render () {
-    const list = this.state.todos.map(item => (
+    const items = this.state.items.map(item => (
       <View style={styles.task} key={item.id}>
         <View>
-          <CheckBox value={item.checked} checked={item.checked} />
+          <CheckBox value={item.completed} checked={item.completed} />
         </View>
         <View>
           <Text>{item.value}</Text>
@@ -53,27 +49,38 @@ export default class App extends React.Component {
     ))
 
     return (
-      <View style={styles.all}>
+      <View style={styles.root}>
         <Text>TO DO :</Text>
         <TextInput
           type='text'
           value={this.state.text}
           placeholder='new task'
-          onChangeText={item => {
-            this.setState({ text: item })
+          onChangeText={input => {
+            this.setState({ text: input })
           }}
         />
         <Button
           title='Add the task'
           onPress={() => {
-            this.state.todos.push(new Todo(this.state.text))
+            const new_task = new Todo(this.state.text)
             this.setState({
-              text: ''
+              text: '',
+              items: [...this.state.items, new_task]
             })
           }}
         />
-        <View>{list}</View>
+        <View>{items}</View>
       </View>
     )
   }
 }
+
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+    justifyContent: 'center'
+  },
+  task: {
+    flexDirection: 'row'
+  }
+})
