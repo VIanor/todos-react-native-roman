@@ -1,8 +1,6 @@
-import React from 'react'
-import Todos from './components/todos'
+import React, { useState } from 'react'
+import Todos from './components/Todos'
 
-export default class App extends React.Component {
-  render () {
-    return <Todos />
-  }
+export default function App() {
+  return <Todos />
 }
