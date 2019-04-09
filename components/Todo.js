@@ -10,52 +10,89 @@ import {
 
 export default class Todo extends React.Component {
   render () {
-    let items = this.props.state.items.map(item => (
-      <View style={styles.root} key={item.id}>
+    if (this.props.edit) {
+      if (this.props.identificator === this.props.data.id) {
+        return (
+          <View style={styles.root}>
+            <View>
+              <CheckBox
+                onChange={() => {
+                  this.props.toggleStatus(this.props.data.id)
+                }}
+                value={this.props.data.completed}
+                checked={this.props.data.completed}
+              />
+            </View>
+            <View>
+              <TextInput
+                type='text'
+                value={this.props.data.value}
+                onChangeText={input => {
+                  this.props.toggleChangeItem(input, this.props.data.id)
+                }}
+              />
+            </View>
+            <View>
+              <Button title='done' onPress={this.props.changeInit} />
+            </View>
+          </View>
+        )
+      } else {
+        return (
+          <View style={styles.root}>
+            <View>
+              <CheckBox
+                onChange={() => {
+                  this.props.toggleStatus(this.props.data.id)
+                }}
+                value={this.props.data.completed}
+                checked={this.props.data.completed}
+              />
+            </View>
+            <View>
+              <Text>{this.props.data.value}</Text>
+            </View>
+            <View>
+              <Button
+                title='edit'
+                onPress={() => {
+                  return null
+                }}
+              />
+            </View>
+          </View>
+        )
+      }
+    }
+    return (
+      <View style={styles.root}>
         <View>
           <CheckBox
             onChange={() => {
-              this.props.toggleItemStatus(item.id)
+              this.props.toggleStatus(this.props.data.id)
             }}
-            value={item.completed}
-            checked={item.completed}
+            value={this.props.data.completed}
+            checked={this.props.data.completed}
           />
         </View>
         <View>
-          <Text>{item.value}</Text>
+          <Text>{this.props.data.value}</Text>
+        </View>
+        <View>
+          <Button title='edit' onPress={this.props.changeInit} />
         </View>
       </View>
-    ))
-    if (this.props.state.edit_mode) {
-      items = this.props.state.items.map(item => (
-        <View style={styles.root} key={item.id}>
-          <View>
-            <CheckBox
-              onChange={() => {
-                this.props.toggleItemStatus(item.id)
-              }}
-              value={item.completed}
-              checked={item.completed}
-            />
-          </View>
-          <View>
-            <TextInput
-              type='text'
-              value={item.value}
-              onChangeText={input => {
-                this.props.changeItem(input, item.id)
-              }}
-            />
-          </View>
-        </View>
-      ))
-    }
-    return <View>{items}</View>
+    )
   }
 }
 
 const styles = StyleSheet.create({
   root: {
-    flexDirection: 'row'
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
+  edit: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end'
   }
 })

@@ -1,5 +1,5 @@
 import React from 'react'
-import TodoItem from './models/TodoModel'
+import TodoModel from './models/Todo'
 import Todo from './Todo'
 import {
   View,
@@ -15,31 +15,35 @@ export default class Todos extends React.Component {
     super(props)
     this.state = {
       text: '',
-      edit_mode: false,
-      items: []
+      items: [],
+      editMode: false,
+      id: undefined
     }
   }
 
   addItem = () => {
     this.setState({
-        text: '',
-        items: [...this.state.items, new TodoItem(this.state.text)]
-      })
+      text: '',
+      items: [...this.state.items, new TodoModel(this.state.text.trim())]
+    })
   }
 
-  changeItems = () => {
-    this.setState({edit_mode: !this.state.edit_mode})
-  }
-
-  toggleItemStatus = (id) => {
-    this.setState({
-      items: this.state.items.map(item => {
+  toggleItemStatus = id => {
+    this.setState(state => ({
+      items: state.items.map(item => {
         if (item.id === id) {
           return { ...item, completed: !item.completed }
         }
         return item
       })
-    })
+    }))
+  }
+
+  changeEvent = itemId => {
+    this.setState(state => ({
+      editMode: !state.editMode,
+      id: itemId
+    }))
   }
 
   changeItem = (input, id) => {
@@ -64,24 +68,33 @@ export default class Todos extends React.Component {
   render () {
     return (
       <View style={styles.root}>
-        <Text>TO DO :</Text>
-        <TextInput
-          type='text'
-          value={this.state.text}
-          placeholder='new task'
-          onChangeText={input => {
-            this.setState({ text: input })
-          }}
-        />
-        <Button
-          title='Add the task'
-          onPress={this.addItem}
-        />
-
-        <Todo state={this.state} toggleItemStatus={this.toggleItemStatus} changeItem={this.changeItem} />
+        <View>
+          <Text>TO DO :</Text>
+          <TextInput
+            type='text'
+            value={this.state.text}
+            placeholder='new task'
+            onChangeText={input => {
+              this.setState({ text: input })
+            }}
+          />
+          <Button title='Add the task' onPress={this.addItem} />
+        </View>
+        {this.state.items.map(item => {
+          return (
+            <Todo
+              key={item.id}
+              edit={this.state.editMode}
+              identificator={this.state.id}
+              data={item}
+              toggleStatus={this.toggleItemStatus}
+              changeInit={this.changeEvent.bind(this, item.id)}
+              toggleChangeItem={this.changeItem}
+            />
+          )
+        })}
         <Text>{this.getTotalItemsCount()} - total count of task</Text>
         <Text>{this.getUncompletedItemsCount()} - uncompleted tasks count</Text>
-        <Button title='Edit Mode' onPress={this.changeItems}/>
       </View>
     )
   }
