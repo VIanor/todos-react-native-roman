@@ -17,11 +17,11 @@ export default class Todos extends React.Component {
   }
 
   addItem = () => {
-    const text = this.state.text
-    if (!text.trim()) return
+    const text = this.state.text.trim()
+    if (!text) return
     this.setState(state => ({
       text: '',
-      items: [...state.items, new TodoModel(text.trim())]
+      items: [...state.items, new TodoModel(text)]
     }))
   }
 
@@ -36,11 +36,11 @@ export default class Todos extends React.Component {
     }))
   }
 
-  saveItem = (id, input) => {
+  saveItemText = (id, text) => {
     this.setState(state => ({
       items: state.items.map(todo => {
         if (todo.id === id) {
-          return { ...todo, value: input }
+          return { ...todo, value: text }
         }
         return todo
       })
@@ -76,7 +76,7 @@ export default class Todos extends React.Component {
               key={item.id}
               data={item}
               toggleStatus={this.toggleItemStatus}
-              save={this.saveItem}
+              save={this.saveItemText}
             />
           )
         })}
