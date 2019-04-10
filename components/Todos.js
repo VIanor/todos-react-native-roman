@@ -11,21 +11,18 @@ import {
 } from 'react-native'
 
 export default class Todos extends React.Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      text: '',
-      items: []
-    }
+  state = {
+    text: '',
+    items: []
   }
 
   addItem = () => {
     const text = this.state.text
-    if (!text.trim()) return null
-    this.setState({
+    if (!text.trim()) return
+    this.setState(state => ({
       text: '',
-      items: [...this.state.items, new TodoModel(text.trim())]
-    })
+      items: [...state.items, new TodoModel(text.trim())]
+    }))
   }
 
   toggleItemStatus = id => {
@@ -39,7 +36,7 @@ export default class Todos extends React.Component {
     }))
   }
 
-  edit = (input, id) => {
+  saveItem = (id, input) => {
     this.setState(state => ({
       items: state.items.map(todo => {
         if (todo.id === id) {
@@ -55,8 +52,7 @@ export default class Todos extends React.Component {
   }
 
   getUncompletedItemsCount = () => {
-    return this.state.items
-      .filter(item => !item.completed).length
+    return this.state.items.filter(item => !item.completed).length
   }
 
   render () {
@@ -72,10 +68,7 @@ export default class Todos extends React.Component {
               this.setState({ text: input })
             }}
           />
-          <Button
-            title='Add the task'
-            onPress={this.addItem}
-          />
+          <Button title='Add the task' onPress={this.addItem} />
         </View>
         {this.state.items.map(item => {
           return (
@@ -83,12 +76,12 @@ export default class Todos extends React.Component {
               key={item.id}
               data={item}
               toggleStatus={this.toggleItemStatus}
-              save={this.edit}
+              save={this.saveItem}
             />
           )
         })}
-        <Text>{this.getTotalItemsCount()} - total count of task</Text>
-        <Text>{this.getUncompletedItemsCount()} - uncompleted tasks count</Text>
+        <Text>Total count of task: {this.getTotalItemsCount()}</Text>
+        <Text>Uncompleted tasks count: {this.getUncompletedItemsCount()}</Text>
       </View>
     )
   }
