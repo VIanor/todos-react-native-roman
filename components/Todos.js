@@ -15,16 +15,16 @@ export default class Todos extends React.Component {
     super(props)
     this.state = {
       text: '',
-      items: [],
-      editMode: false,
-      id: undefined
+      items: []
     }
   }
 
   addItem = () => {
+    const text = this.state.text
+    if (!text.trim()) return null
     this.setState({
       text: '',
-      items: [...this.state.items, new TodoModel(this.state.text.trim())]
+      items: [...this.state.items, new TodoModel(text.trim())]
     })
   }
 
@@ -39,22 +39,15 @@ export default class Todos extends React.Component {
     }))
   }
 
-  changeEvent = itemId => {
+  edit = (input, id) => {
     this.setState(state => ({
-      editMode: !state.editMode,
-      id: itemId
-    }))
-  }
-
-  changeItem = (input, id) => {
-    this.setState({
-      items: this.state.items.map(todo => {
+      items: state.items.map(todo => {
         if (todo.id === id) {
           return { ...todo, value: input }
         }
         return todo
       })
-    })
+    }))
   }
 
   getTotalItemsCount = () => {
@@ -62,7 +55,8 @@ export default class Todos extends React.Component {
   }
 
   getUncompletedItemsCount = () => {
-    return this.state.items.filter(item => !item.completed).length
+    return this.state.items
+      .filter(item => !item.completed).length
   }
 
   render () {
@@ -78,18 +72,18 @@ export default class Todos extends React.Component {
               this.setState({ text: input })
             }}
           />
-          <Button title='Add the task' onPress={this.addItem} />
+          <Button
+            title='Add the task'
+            onPress={this.addItem}
+          />
         </View>
         {this.state.items.map(item => {
           return (
             <Todo
               key={item.id}
-              edit={this.state.editMode}
-              identificator={this.state.id}
               data={item}
               toggleStatus={this.toggleItemStatus}
-              changeInit={this.changeEvent.bind(this, item.id)}
-              toggleChangeItem={this.changeItem}
+              save={this.edit}
             />
           )
         })}

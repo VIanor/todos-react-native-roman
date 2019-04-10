@@ -9,80 +9,76 @@ import {
 } from 'react-native'
 
 export default class Todo extends React.Component {
-  render () {
-    if (this.props.edit) {
-      if (this.props.identificator === this.props.data.id) {
-        return (
-          <View style={styles.root}>
-            <View>
-              <CheckBox
-                onChange={() => {
-                  this.props.toggleStatus(this.props.data.id)
-                }}
-                value={this.props.data.completed}
-                checked={this.props.data.completed}
-              />
-            </View>
-            <View>
-              <TextInput
-                type='text'
-                value={this.props.data.value}
-                onChangeText={input => {
-                  this.props.toggleChangeItem(input, this.props.data.id)
-                }}
-              />
-            </View>
-            <View>
-              <Button title='done' onPress={this.props.changeInit} />
-            </View>
-          </View>
-        )
-      } else {
-        return (
-          <View style={styles.root}>
-            <View>
-              <CheckBox
-                onChange={() => {
-                  this.props.toggleStatus(this.props.data.id)
-                }}
-                value={this.props.data.completed}
-                checked={this.props.data.completed}
-              />
-            </View>
-            <View>
-              <Text>{this.props.data.value}</Text>
-            </View>
-            <View>
-              <Button
-                title='edit'
-                onPress={() => {
-                  return null
-                }}
-              />
-            </View>
-          </View>
-        )
-      }
+  
+  constructor(props) {
+    super(props)
+    this.state = {
+      edit: false
     }
-    return (
-      <View style={styles.root}>
-        <View>
-          <CheckBox
-            onChange={() => {
-              this.props.toggleStatus(this.props.data.id)
-            }}
-            value={this.props.data.completed}
-            checked={this.props.data.completed}
-          />
+  }
+
+  edit = (input, id) => {
+    this.props.save(input, id)
+  }
+
+  render () {
+    let {data} = this.props
+
+    if (!this.state.edit) {
+      return (
+        <View style={styles.root}>
+          <View>
+            <CheckBox
+              onChange={() => {
+                this.props.toggleStatus(data.id)
+              }}
+              value={data.completed}
+              checked={data.completed}
+            />
+          </View>
+          <View>
+            <Text>{data.value}</Text>
+          </View>
+          <View>
+            <Button title='edit' onPress={() => {
+              this.setState({
+                edit: !this.state.edit
+              })
+            }} />
+          </View>
         </View>
-        <View>
-          <Text>{this.props.data.value}</Text>
+      )
+    } else {
+      return (
+        <View style={styles.root}>
+          <View>
+            <CheckBox
+              onChange={() => {
+                this.props.toggleStatus(data.id)
+              }}
+              value={data.completed}
+              checked={data.completed}
+            />
+          </View>
+          <View>
+            <TextInput
+              type='text'
+              value={data.value}
+              onChangeText={input => {
+                this.edit(input, data.id)
+              }}
+            />
+          </View>
+          <View>
+            <Button title='done' onPress={() => {
+            this.setState(state => ({
+                  edit: !state.edit
+                }))
+              }} />
+          </View>
         </View>
-        <View>
-          <Button title='edit' onPress={this.props.changeInit} />
-        </View>
-      </View>
-    )
+      )
+    }
   }
 }
 
