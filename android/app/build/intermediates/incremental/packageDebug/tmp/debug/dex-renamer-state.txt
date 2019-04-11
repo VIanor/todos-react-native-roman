@@ -1,0 +1,4 @@
+#Thu Apr 11 11:14:22 MSK 2019
+base.0=/home/vianor/Code/react-native-app-todo/android/app/build/intermediates/transforms/dexMerger/debug/0
+renamed.0=classes.dex
+path.0=classes.dex
